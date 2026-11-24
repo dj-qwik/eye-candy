@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="description" content="Eye Candy — a psychedelic music visualizer you can play with a controller.">
+<meta property="og:title" content="Eye Candy">
+<meta property="og:description" content="A psychedelic music visualizer you can play with a controller.">
+<title>Eye Candy</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="icon.png">
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="splash">
+  <div class="logo big"><span>EYE</span><span>CANDY</span></div>
+  <div class="tag">a psychedelic music visualizer you can play</div>
+  <div class="splash-actions">
+    <button class="btn primary" data-act="addFiles">♫ Add music</button>
+    <button class="btn" data-act="addFolder">📁 Add a folder</button>
+    <button class="btn" data-act="loopback">🔊 Visualize my PC audio</button>
+    <button class="btn" data-act="mic">🎙 Microphone</button>
+    <button class="btn ghost" data-act="demo">✦ Demo groove</button>
+  </div>
+  <div class="hint">…or drag &amp; drop songs anywhere. Grab a controller and press any button to play with it.</div>
+  <div id="loadbar"><div></div></div>
+</div>
+
+<div id="ui" class="show">
+  <header id="topbar">
+    <div class="logo"><span>EYE</span><span>CANDY</span></div>
+    <div class="preset-nav">
+      <button class="icon" data-act="prevPreset" title="Previous preset (←)">‹</button>
+      <div id="presetName" title="Current preset">—</div>
+      <button class="icon" data-act="nextPreset" title="Next preset (→)">›</button>
+    </div>
+    <div class="top-actions">
+      <button class="chip" data-act="mutate" title="Randomize settings (R)">⚄ Randomize</button>
+      <button class="chip" data-act="generate" title="Generate a brand-new preset (G)">✦ Generate</button>
+      <button class="chip" data-act="save" title="Save as new preset (S)">★ Save</button>
+      <button class="chip" id="autoBtn" data-act="autopilot" title="Autopilot (A)">⟳ Autopilot</button>
+      <button class="chip hidden" id="tpChip" data-act="touchpad" title="Enable the PS touchpad">◉ Enable touchpad</button>
+      <button class="chip" data-act="controls" title="Controller guide (C)">🎮</button>
+      <button class="chip" data-act="fullscreen" title="Fullscreen (F)">⛶</button>
+    </div>
+  </header>
+
+  <div id="scrim" data-act="closeSheet"></div>
+  <aside id="left" class="panel">
+    <div class="panel-head"><h2>Music</h2><button class="mini sheetx" data-act="closeSheet">✕</button>
+      <div class="src-switch">
+        <button class="mini" data-act="addFiles">+ Files</button>
+        <button class="mini" data-act="addFolder">+ Folder</button>
+      </div>
+    </div>
+    <div class="source-row">
+      <button class="src" id="srcPlayer" data-act="srcPlayer">Playlist</button>
+      <button class="src" id="srcLoop" data-act="loopback">PC Audio</button>
+      <button class="src" id="srcMic" data-act="mic">Mic</button>
+      <button class="src" id="srcDemo" data-act="demo">Demo</button>
+    </div>
+    <div class="mtrans"><button class="icon" data-act="prevTrack">⏮</button><button class="icon play" id="playBtn2" data-act="playPause">▶</button><button class="icon" data-act="nextTrack">⏭</button></div>
+    <ol id="playlist"></ol>
+    <div class="pl-foot">
+      <button class="mini" id="shuffleBtn" data-act="shuffle">⤮ Shuffle</button>
+      <button class="mini" id="repeatBtn" data-act="repeat">↻ Repeat all</button>
+      <button class="mini" data-act="clearList">Clear</button>
+    </div>
+  </aside>
+
+  <aside id="right" class="panel">
+    <button class="mini sheetx sheetx-r" data-act="closeSheet">✕</button>
+    <div class="tabs">
+      <button class="tab on" data-tab="presets">Presets</button>
+      <button class="tab" data-tab="tweak">Tweak</button>
+      <button class="tab" data-tab="settings">Settings</button>
+    </div>
+    <section class="tabpage on" id="tab-presets">
+      <div class="coll">
+        <button class="cbtn on" data-coll="eye">Eye Candy</button>
+        <button class="cbtn" data-coll="flux">Flux</button>
+        <button class="cbtn" data-coll="user">My Presets</button>
+        <button class="cbtn" data-coll="milk">MilkDrop</button>
+      </div>
+      <select id="milkCat" class="hidden" style="margin-bottom:8px"></select>
+      <input id="search" placeholder="Search presets…" spellcheck="false">
+      <ul id="presetList"></ul>
+    </section>
+    <section class="tabpage" id="tab-tweak">
+      <div class="row"><input id="pName" spellcheck="false"></div>
+      <div class="row two">
+        <label>Scene<select id="sceneSel"></select></label>
+        <label>Palette<select id="palSel"></select></label>
+      </div>
+      <div id="milkRow" class="row hidden"><label>MilkDrop preset<select id="milkSel"></select></label></div>
+      <h3>Scene shape <small>(right stick morphs <b id="stickNames"></b>)</small></h3>
+      <div id="paramSliders"></div>
+      <h3>Trip FX</h3>
+      <div id="fxSliders"></div>
+      <div class="row btns">
+        <button class="btn primary" data-act="save">★ Save as new</button>
+        <button class="btn" data-act="overwrite" id="overwriteBtn">Update</button>
+        <button class="btn" data-act="revert">Revert</button>
+        <button class="btn" data-act="mutate">⚄ Randomize</button>
+        <button class="btn danger" data-act="deletePreset" id="deleteBtn">Delete</button>
+      </div>
+    </section>
+    <section class="tabpage" id="tab-settings">
+      <div id="settingsForm"></div>
+      <div class="row btns">
+        <button class="btn" data-act="exportPresets">Export my presets</button>
+        <button class="btn" data-act="importPresets">Import presets</button>
+      </div>
+      <p class="fine">Eye Candy · MilkDrop engine powered by Butterchurn · Cream of the Crop presets curated by ISOSCELES, via projectM · MilkDrop texture pack via projectM · Right-drag on the visuals = touchpad stir · Middle-click = burst · Keyboard: ←/→ presets · Space burst · R randomize · G generate · S save · K kaleidoscope · P palette · ↑/↓ time · H hide UI · F fullscreen · C controller guide</p>
+    </section>
+  </aside>
+
+  <footer id="transport">
+    <canvas id="spec"></canvas>
+    <div class="np"><div id="npTitle">Nothing playing</div><div id="npSub">Drop music anywhere</div></div>
+    <div class="tctl">
+      <button class="icon" data-act="prevTrack">⏮</button>
+      <button class="icon play" id="playBtn" data-act="playPause">▶</button>
+      <button class="icon" data-act="nextTrack">⏭</button>
+    </div>
+    <div class="seek"><span id="tCur">0:00</span><input type="range" id="seek" min="0" max="1000" value="0"><span id="tDur">0:00</span></div>
+    <div class="vol">🔈<input type="range" id="vol" min="0" max="100" value="85"></div>
+  </footer>
+</div>
+
+<div id="hud"></div>
+<div id="fps"></div>
+<div id="padToast"></div>
+
+<div id="controls" class="hidden">
+  <div class="cbox">
+    <h2>Play the visuals 🎮</h2>
+    <p class="sub">Every input is live. Squeeze, twist and smash things to the beat.</p>
+    <div class="cgrid" id="cgrid"></div>
+    <p class="sub">Press <b data-g="BACK"></b> or C to close · hold <b data-g="BACK"></b> to toggle autopilot</p>
+  </div>
+</div>
+
+<input type="file" id="fileIn" accept="audio/*,.mp3,.flac,.wav,.ogg,.m4a,.aac,.opus,.webm" multiple hidden>
+<input type="file" id="folderIn" webkitdirectory multiple hidden>
+<input type="file" id="importIn" accept=".json,application/json" hidden>
+<script src="app.js"></script>
+</body>
+</html>
