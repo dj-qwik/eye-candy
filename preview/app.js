@@ -195,12 +195,15 @@ void mainImage(out vec4 c, in vec2 fc){
   }
   c=vec4(col,1);
 }`});A({landscape:!0,id:"horizon",name:"Neon Horizon",params:[{n:"Grid Speed",min:0,max:4,def:1.2},{n:"Sun Size",min:.1,max:.6,def:.32},{n:"Mountains",min:0,max:2,def:1},{n:"Grid Density",min:2,max:20,def:8},{n:"Terrain Warp",min:0,max:2,def:.6},{n:"Stars",min:0,max:2,def:1},{n:"Sun Stripes",min:0,max:24,def:10},{n:"Glow",min:.3,max:3,def:1.2}],stick:[4,2],code:`
+float fbmN(vec2 p, int N){ float a=.5, s=0.; for(int i=0;i<5;i++){ if(i>=N) break; s+=a*vnoise(p); p=rot(.5)*p*2.03+11.7; a*=.5; } return s; }
 float terr(vec2 p){
   float x=abs(p.x);
+  float wob=sin(p.y*.3+p.x*.2)*.06*P4;
   float side=smoothstep(1.6,7.,x);
+  if(side<=0.) return wob;                                 // flat neon road: no noise needed
   float spec=fft(clamp((x-1.2)*.07,0.,1.));
-  float n=fbm(p*.22)*1.1+fbm(p*.9)*.25*P4;
-  return side*(n*.35+spec*.75*P2)*(.85+uBass*.15)+sin(p.y*.3+p.x*.2)*.06*P4;
+  float n=fbmN(p*.22,3)*1.1+fbmN(p*.9,2)*.25*P4;
+  return side*(n*.35+spec*.75*P2)*(.85+uBass*.15)+wob;
 }
 void mainImage(out vec4 c, in vec2 fc){
   vec2 uv=UV(fc);
@@ -220,9 +223,20 @@ void mainImage(out vec4 c, in vec2 fc){
   col=mix(col,sun,smoothstep(.006,-.006,sd)*(1.-stripe*.85));
   col+=pal(.92)*.008/(max(sd,0.)+.05)*P7*(.8+uBass*.5);
   // terrain march
-  float t=.1; bool hit=false;
-  for(int i=0;i<90;i++){ vec3 p=ro+rd*t; float h=p.y-terr(p.xz); if(h<.002*t){hit=true;break;} t+=h*.45; if(t>60.)break; }
+  // terrain march: start at the highest point the mountains can reach, take bigger steps, then bisect to the surface
+  float maxH=(1.1+.25*P4)*.35*(1.+uBass*.15)*.8+.75*P2*(1.+uBass*.15)+.06*P4+.02;
+  float t=.1, tmax=60.; bool hit=false;
+  if(ro.y>maxH){ if(rd.y>=0.) tmax=0.; else t=max(t,(ro.y-maxH)/-rd.y); }
+  else if(rd.y>0.) tmax=min(tmax,(maxH-ro.y)/rd.y);
+  float tp=t;
+  for(int i=0;i<64;i++){ if(t>tmax) break;
+    vec3 p=ro+rd*t; float h=p.y-terr(p.xz);
+    if(h<.002*t){hit=true;break;}
+    tp=t; t+=max(h*.6,.004*t);
+  }
+  if(hit){ for(int j=0;j<5;j++){ float tm=(tp+t)*.5; vec3 p=ro+rd*tm; if(p.y-terr(p.xz)<.002*tm) t=tm; else tp=tm; } }
   if(hit){
+    vec3 skyc=col;
     vec3 p=ro+rd*t;
     float hh=terr(p.xz);
     vec2 g=p.xz*P3*.25; g.y-=zt*0.; 
@@ -234,6 +248,7 @@ void mainImage(out vec4 c, in vec2 fc){
     col=base+lc*line;
     float fog=1.-exp(-t*.045);
     col=mix(col,pal(.8)*.35,fog);
+    col=mix(col,skyc,smoothstep(9.,21.,t));                 // the far grid dissolves into the sunset
   }
   c=vec4(col,1);
 }`});A({crisp:!0,id:"mandala",name:"Spectral Mandala",params:[{n:"Symmetry",min:3,max:24,def:12},{n:"Rings",min:1,max:10,def:6},{n:"Petal Size",min:0,max:1,def:.5},{n:"Line Width",min:.5,max:4,def:1.5},{n:"Spin",min:-1,max:1,def:.12},{n:"Wave Ring",min:0,max:2,def:1},{n:"Lace",min:0,max:2,def:1},{n:"Zoom",min:.5,max:2.5,def:1}],stick:[0,2],code:`
@@ -371,7 +386,7 @@ void mainImage(out vec4 c, in vec2 fc){
   float ang=atan(uv.y-sun.y,uv.x-sun.x);
   col+=pal(.1)*pow(vn(vec2(ang*9.,uTime*.2)),4.)*exp(-length(uv-sun)*1.2)*.35*(1.+uBeat*.6);
   c=vec4(col,1);
-}`});A({ss:2,id:"wavefield",name:"Neon Wavefield",params:[{n:"Scroll",min:0,max:2,def:.35},{n:"Peak Height",min:0,max:2,def:1},{n:"Line Glow",min:.3,max:3,def:1.2},{n:"Spread",min:.2,max:1.5,def:.6},{n:"Wave Mix",min:0,max:1,def:.3},{n:"Fill",min:0,max:1,def:.85},{n:"Hue Depth",min:0,max:2,def:.8},{n:"Horizon",min:-.3,max:.3,def:.05}],stick:[1,3],code:`
+}`});A({id:"wavefield",name:"Neon Wavefield",params:[{n:"Scroll",min:0,max:2,def:.35},{n:"Peak Height",min:0,max:2,def:1},{n:"Line Glow",min:.3,max:3,def:1.2},{n:"Spread",min:.2,max:1.5,def:.6},{n:"Wave Mix",min:0,max:1,def:.3},{n:"Fill",min:0,max:1,def:.85},{n:"Hue Depth",min:0,max:2,def:.8},{n:"Horizon",min:-.3,max:.3,def:.05}],stick:[1,3],code:`
 void mainImage(out vec4 c, in vec2 fc){
   vec2 uv=UV(fc); uv.x+=uCam.x*.3;
   vec3 col=vec3(0);
@@ -385,9 +400,10 @@ void mainImage(out vec4 c, in vec2 fc){
     float x=uv.x*(z*2.+.6);
     float env=exp(-x*x/(P3*P3*.9));
     float f=fft(abs(x)*.4+.02);
-    float y=yb+(f*.9*P1+wav(x*.3+fi)*.05*P4)*env*sqrt(persp)*.2+fbm(vec2(x*4.,fi*20.))*.02*env;
+    float y=yb+(f*.9*P1+wav(x*.3+fi)*.05*P4)*env*sqrt(persp)*.2+(vn(vec2(x*4.,fi*20.))*.75+vn(vec2(x*9.,fi*31.))*.25)*.02*env;
     if(uv.y<y) col*=1.-P5*smoothstep(0.,.02,y-uv.y);
     float d=uv.y-y;
+    if(abs(d)>.25) continue;                                  // far from this line: its glow is negligible
     col+=pal(z*P6+f*.3+uTime*.02)*glowLine(d,.0028*persp)*.3*P2*(.35+env)*(1.-z*.7)*(1.+uBeat*.5);
   }
   c=vec4(col,1);
