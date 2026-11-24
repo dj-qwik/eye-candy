@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="description" content="Eye Candy — a psychedelic music visualizer you can play with a controller.">
 <meta property="og:title" content="Eye Candy">
 <meta property="og:description" content="A psychedelic music visualizer you can play with a controller.">
@@ -46,8 +49,9 @@
     </div>
   </header>
 
+  <div id="scrim" data-act="closeSheet"></div>
   <aside id="left" class="panel">
-    <div class="panel-head"><h2>Music</h2>
+    <div class="panel-head"><h2>Music</h2><button class="mini sheetx" data-act="closeSheet">✕</button>
       <div class="src-switch">
         <button class="mini" data-act="addFiles">+ Files</button>
         <button class="mini" data-act="addFolder">+ Folder</button>
@@ -59,6 +63,7 @@
       <button class="src" id="srcMic" data-act="mic">Mic</button>
       <button class="src" id="srcDemo" data-act="demo">Demo</button>
     </div>
+    <div class="mtrans"><button class="icon" data-act="prevTrack">⏮</button><button class="icon play" id="playBtn2" data-act="playPause">▶</button><button class="icon" data-act="nextTrack">⏭</button></div>
     <ol id="playlist"></ol>
     <div class="pl-foot">
       <button class="mini" id="shuffleBtn" data-act="shuffle">⤮ Shuffle</button>
@@ -68,6 +73,7 @@
   </aside>
 
   <aside id="right" class="panel">
+    <button class="mini sheetx sheetx-r" data-act="closeSheet">✕</button>
     <div class="tabs">
       <button class="tab on" data-tab="presets">Presets</button>
       <button class="tab" data-tab="tweak">Tweak</button>

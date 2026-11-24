@@ -6,6 +6,7 @@ A psychedelic music visualizer you can **play**: 22 hand-written GPU fractal & s
 
 - Drop songs on the page, pick **Visualize a tab or PC audio**, or hit **Demo groove**
 - Plug in a controller and press any button — press **C** for the controller guide
+- **On a phone or tablet:** put your thumbs down anywhere — left thumb steers, right thumb morphs. Hold **WARP** / **DRIVE**, tap the round buttons for bursts, kaleidoscope, colours and more. ☰ opens presets, ♫ opens music.
 - **F** fullscreen · **H** hide interface · ←/→ presets · Space burst · R randomize · G generate · S save
 
 MilkDrop engine powered by [Butterchurn](https://github.com/jberg/butterchurn).
