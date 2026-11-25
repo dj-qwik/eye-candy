@@ -280,3 +280,9 @@ body.mobile #splash .tag{font-size:10px;letter-spacing:.22em;text-align:center;p
 #recHud .dot{width:9px;height:9px;border-radius:50%;background:#ff3b5c;animation:recpulse 1.2s ease-in-out infinite}
 #recHud.hidden{display:none}
 body.recording #recHud{opacity:1}
+
+/* ───────── welcome screen skip */
+.splash-skip{margin-top:18px;display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;position:relative;z-index:2}
+.splash-skip .btn.small{padding:7px 14px;font-size:13px;opacity:.85}
+.splash-skip .noshow{font-size:12px;opacity:.65;display:flex;gap:6px;align-items:center;cursor:pointer}
+.splash-skip .noshow input{accent-color:rgb(var(--c1))}
