@@ -85,6 +85,12 @@
         <button class="cbtn" data-coll="flux">Flux</button>
         <button class="cbtn" data-coll="user">My Presets</button>
         <button class="cbtn" data-coll="milk">MilkDrop</button>
+        <button class="cbtn" data-coll="photo">📷 Photos</button>
+      </div>
+      <div id="photoBox" class="hidden">
+        <label class="btn primary addphoto">＋ Add photos<input id="photoIn" type="file" accept="image/*" multiple hidden></label>
+        <div id="photoStrip"></div>
+        <div id="photoHint" class="d"></div>
       </div>
       <select id="milkCat" class="hidden" style="margin-bottom:8px"></select>
       <input id="search" placeholder="Search presets…" spellcheck="false">
