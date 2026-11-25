@@ -286,3 +286,45 @@ body.recording #recHud{opacity:1}
 .splash-skip .btn.small{padding:7px 14px;font-size:13px;opacity:.85}
 .splash-skip .noshow{font-size:12px;opacity:.65;display:flex;gap:6px;align-items:center;cursor:pointer}
 .splash-skip .noshow input{accent-color:rgb(var(--c1))}
+
+/* ───────── startup intro: Monkey Business Software presents… EYE CANDY  (logo 0–2.7s · banner 2.4–5.2s · title 4.9–7.6s) */
+#intro{position:fixed;inset:0;z-index:200;background:#000;display:grid;grid-template-columns:100%;grid-template-rows:100%;place-items:center;overflow:hidden;cursor:pointer}
+#intro.hidden{display:none}
+#intro.out{animation:introOut .7s ease forwards}
+@keyframes introOut{to{opacity:0;visibility:hidden}}
+.intro-stage{grid-area:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;opacity:0}
+/* the logo rises out of the dark; its black background is feathered into the black screen */
+.intro-logo{animation:logoStage 2.8s ease forwards}
+@keyframes logoStage{0%{opacity:0}18%{opacity:1}80%{opacity:1}100%{opacity:0}}
+#mbsLogo{display:block;width:min(86vw,calc(78vh*1.5),1100px);height:auto;
+  -webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 72%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 72%,transparent 100%);
+  animation:logoIn 2.8s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes logoIn{0%{transform:scale(.9);filter:blur(12px) brightness(.4)}28%{transform:scale(1);filter:blur(0) brightness(1) drop-shadow(0 0 0 rgba(255,30,30,0))}
+  45%{filter:brightness(1.18) drop-shadow(0 0 38px rgba(255,30,30,.55))}70%{filter:brightness(1) drop-shadow(0 0 18px rgba(255,30,30,.3))}100%{transform:scale(1.05);filter:brightness(1)}}
+/* huge banner in the logo's colours: steel letters with a hot red light sweeping across */
+.intro-banner{animation:bannerStage 2.8s ease 2.4s forwards}
+@keyframes bannerStage{0%{opacity:0}12%{opacity:1}82%{opacity:1}100%{opacity:0}}
+.mbs-banner{width:100%;overflow:hidden;white-space:nowrap;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2vh}
+.mbs-banner span{display:inline-block;font-family:Unbounded;font-weight:900;font-size:clamp(20px,4.1vw,96px);letter-spacing:.03em;max-width:96vw;
+  background:linear-gradient(100deg,#9a9a9a 0%,#f2f2f2 30%,#ffffff 40%,#ff2020 47%,#ff6a3a 50%,#ff2020 53%,#ffffff 60%,#cfcfcf 75%,#8d8d8d 100%);background-size:320% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 24px rgba(255,25,25,.45));
+  animation:bannerSweep 2.8s cubic-bezier(.16,.8,.3,1) 2.4s both, bannerShine 1.6s linear 2.75s 2 both}
+@keyframes bannerSweep{0%{transform:translateX(60%) skewX(-12deg);opacity:0;letter-spacing:.25em}20%{opacity:1}50%{transform:translateX(0) skewX(0);letter-spacing:.03em}100%{transform:translateX(-1.5%);letter-spacing:.04em}}
+@keyframes bannerShine{from{background-position:100% 0}to{background-position:-40% 0}}
+.mbs-banner em{font-family:'Space Grotesk';font-style:normal;font-weight:700;font-size:clamp(15px,2.4vw,34px);letter-spacing:1em;padding-left:1em;text-transform:uppercase;color:#ff2a2a;
+  text-shadow:0 0 18px rgba(255,30,30,.6);opacity:0;animation:presents 2.8s ease 2.4s forwards}
+@keyframes presents{0%,38%{opacity:0;transform:translateY(10px)}55%{opacity:1;transform:none}100%{opacity:1}}
+/* and then: EYE CANDY */
+.intro-ec{animation:ecStage 2.7s ease 4.9s forwards}
+@keyframes ecStage{0%{opacity:0;transform:scale(.88);filter:blur(14px)}35%{opacity:1;transform:scale(1);filter:blur(0)}80%{opacity:1}100%{opacity:1;transform:scale(1.04)}}
+.intro-ec .logo.big{font-size:clamp(44px,9.2vw,170px);filter:drop-shadow(0 0 40px rgba(var(--c1),.6))}
+.intro-skip{position:absolute;bottom:4vh;left:0;right:0;text-align:center;font:500 12px 'Space Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);opacity:0;animation:skipHint 1s ease 1.4s forwards}
+@keyframes skipHint{to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.intro-logo,.intro-banner,.intro-ec,.mbs-banner span,.mbs-banner em,#mbsLogo{animation-duration:.01s!important;animation-delay:0s!important}}
+
+/* tall screens (phones held upright): the banner wraps onto lines so it can stay huge */
+@media (max-aspect-ratio:1/1){
+  .mbs-banner{white-space:normal}
+  .mbs-banner span{font-size:10.5vw;line-height:1.05;max-width:92vw;text-align:center}
+  .intro-ec .logo.big{font-size:10vw;letter-spacing:.02em}
+}
