@@ -15,7 +15,15 @@
 </head>
 <body>
 <canvas id="gl"></canvas>
+<div id="recHud" class="hidden"><span class="dot"></span>REC <span id="recT">0:00</span></div>
 
+<div id="intro" aria-hidden="true">
+  <div class="intro-stage intro-logo"><img id="mbsLogo" src="mbs-logo.jpg" alt="Monkey Business Software" decoding="async"></div>
+  <div class="intro-stage intro-banner"><div class="mbs-banner"><span>MONKEY BUSINESS SOFTWARE</span><em>presents</em></div></div>
+  <div class="intro-stage intro-ec"><div class="logo big"><span>EYE</span><span>CANDY</span></div></div>
+  <div class="intro-skip">click or press any key to skip</div>
+</div>
+<script>window.__introT0 = performance.now();</script>
 <div id="splash">
   <div class="logo big"><span>EYE</span><span>CANDY</span></div>
   <div class="tag">a psychedelic music visualizer you can play</div>
@@ -27,6 +35,8 @@
     <button class="btn ghost" data-act="demo">✦ Demo groove</button>
   </div>
   <div class="hint">…or drag &amp; drop songs anywhere. Grab a controller and press any button to play with it.</div>
+  <div class="splash-skip"><button class="btn ghost small" data-act="skipSplash">Skip → just the visuals</button>
+    <label class="noshow"><input type="checkbox" id="noSplash"> Don't show this again</label></div>
   <div id="loadbar"><div></div></div>
 </div>
 
@@ -44,7 +54,7 @@
       <button class="chip" data-act="save" title="Save as new preset (S)">★ Save</button>
       <button class="chip" id="autoBtn" data-act="autopilot" title="Autopilot (A)">⟳ Autopilot</button>
       <button class="chip hidden" id="tpChip" data-act="touchpad" title="Enable the PS touchpad">◉ Enable touchpad</button>
-      <button class="chip" data-act="controls" title="Controller guide (C)">🎮</button>
+      <button class="chip" data-act="controls" title="Controls guide — controller, keyboard & mouse (C or ?)">🎮</button>
       <button class="chip" data-act="fullscreen" title="Fullscreen (F)">⛶</button>
     </div>
   </header>
@@ -63,7 +73,7 @@
       <button class="src" id="srcMic" data-act="mic">Mic</button>
       <button class="src" id="srcDemo" data-act="demo">Demo</button>
     </div>
-    <div class="mtrans"><button class="icon" data-act="prevTrack">⏮</button><button class="icon play" id="playBtn2" data-act="playPause">▶</button><button class="icon" data-act="nextTrack">⏭</button></div>
+    <div class="mtrans"><button class="icon" data-act="prevTrack">⏮</button><button class="icon play" id="playBtn2" data-act="playPause">▶</button><button class="icon" data-act="nextTrack">⏭</button><button class="icon rec" data-act="record" title="Record a clip"><span class="dot"></span></button></div>
     <ol id="playlist"></ol>
     <div class="pl-foot">
       <button class="mini" id="shuffleBtn" data-act="shuffle">⤮ Shuffle</button>
@@ -103,9 +113,9 @@
         <label>Palette<select id="palSel"></select></label>
       </div>
       <div id="milkRow" class="row hidden"><label>MilkDrop preset<select id="milkSel"></select></label></div>
-      <h3>Scene shape <small>(right stick morphs <b id="stickNames"></b>)</small></h3>
-      <div id="paramSliders"></div>
-      <h3>Trip FX</h3>
+      <div class="ctabs stabs" id="tweakTabs"><button type="button" data-tw="shape" class="on">Shape</button><button type="button" data-tw="Motion">Motion</button><button type="button" data-tw="Look">Look</button><button type="button" data-tw="Music">Music</button></div>
+      <div class="twg" data-g="shape"><h3>Scene shape <small>(right stick morphs <b id="stickNames"></b>)</small></h3>
+      <div id="paramSliders"></div></div>
       <div id="fxSliders"></div>
       <div class="row btns">
         <button class="btn primary" data-act="save">★ Save as new</button>
@@ -118,11 +128,11 @@
     <section class="tabpage" id="tab-settings">
       <div id="settingsForm"></div>
       <div class="row btns">
-        <button class="btn" data-act="resetSettings">↺ Reset to defaults</button>
+        <button class="btn" data-act="resetSettings">↺ Reset this tab</button>
         <button class="btn" data-act="exportPresets">Export my presets</button>
         <button class="btn" data-act="importPresets">Import presets</button>
       </div>
-      <p class="fine">Eye Candy · MilkDrop engine powered by Butterchurn · Cream of the Crop presets curated by ISOSCELES, via projectM · MilkDrop texture pack via projectM · Right-drag on the visuals = touchpad stir · Middle-click = burst · Keyboard: ←/→ presets · Space burst · R randomize · G generate · S save · K kaleidoscope · P palette · ↑/↓ time · H hide UI · F fullscreen · C controller guide</p>
+      <p class="fine">Eye Candy · MilkDrop engine powered by Butterchurn · Cream of the Crop presets curated by ISOSCELES, via projectM · MilkDrop texture pack via projectM · Clip timing fix via fix-webm-duration (MIT) · Right-drag on the visuals = touchpad stir · Middle-click = burst · Press C or ? for every control (controller, keyboard & mouse)</p>
     </section>
   </aside>
 
@@ -133,6 +143,7 @@
       <button class="icon" data-act="prevTrack">⏮</button>
       <button class="icon play" id="playBtn" data-act="playPause">▶</button>
       <button class="icon" data-act="nextTrack">⏭</button>
+      <button class="icon rec" data-act="record" title="Record a clip (V)"><span class="dot"></span></button>
     </div>
     <div class="seek"><span id="tCur">0:00</span><input type="range" id="seek" min="0" max="1000" value="0"><span id="tDur">0:00</span></div>
     <div class="vol">🔈<input type="range" id="vol" min="0" max="100" value="85"></div>
@@ -145,10 +156,11 @@
 
 <div id="controls" class="hidden">
   <div class="cbox">
-    <h2>Play the visuals 🎮</h2>
+    <div id="ctabs" class="ctabs"><button data-page="pad">🎮 Controller</button><button data-page="keys">⌨ Keyboard &amp; mouse</button></div>
+    <h2 id="ctitle">Play the visuals 🎮</h2>
     <p class="sub">Every input is live. Squeeze, twist and smash things to the beat.</p>
     <div class="cgrid" id="cgrid"></div>
-    <p class="sub">Press <b data-g="BACK"></b> or C to close · hold <b data-g="BACK"></b> to toggle autopilot</p>
+    <p class="sub" id="cfoot"></p>
   </div>
 </div>
 
