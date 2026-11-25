@@ -328,3 +328,8 @@ body.recording #recHud{opacity:1}
   .mbs-banner span{font-size:10.5vw;line-height:1.05;max-width:92vw;text-align:center}
   .intro-ec .logo.big{font-size:10vw;letter-spacing:.02em}
 }
+
+/* controls guide: controller / keyboard pages */
+.ctabs{display:flex;gap:8px;justify-content:center;margin-bottom:10px}
+.ctabs button{border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:inherit;font:600 13px 'Space Grotesk',sans-serif;padding:7px 14px;border-radius:999px;cursor:pointer}
+.ctabs button.on{background:linear-gradient(90deg,rgba(var(--c1),.45),rgba(var(--c2),.45));border-color:rgba(var(--c1),.8)}

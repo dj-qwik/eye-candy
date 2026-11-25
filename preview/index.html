@@ -54,7 +54,7 @@
       <button class="chip" data-act="save" title="Save as new preset (S)">★ Save</button>
       <button class="chip" id="autoBtn" data-act="autopilot" title="Autopilot (A)">⟳ Autopilot</button>
       <button class="chip hidden" id="tpChip" data-act="touchpad" title="Enable the PS touchpad">◉ Enable touchpad</button>
-      <button class="chip" data-act="controls" title="Controller guide (C)">🎮</button>
+      <button class="chip" data-act="controls" title="Controls guide — controller, keyboard & mouse (C or ?)">🎮</button>
       <button class="chip" data-act="fullscreen" title="Fullscreen (F)">⛶</button>
     </div>
   </header>
@@ -132,7 +132,7 @@
         <button class="btn" data-act="exportPresets">Export my presets</button>
         <button class="btn" data-act="importPresets">Import presets</button>
       </div>
-      <p class="fine">Eye Candy · MilkDrop engine powered by Butterchurn · Cream of the Crop presets curated by ISOSCELES, via projectM · MilkDrop texture pack via projectM · Clip timing fix via fix-webm-duration (MIT) · Right-drag on the visuals = touchpad stir · Middle-click = burst · Keyboard: ←/→ presets · Space burst · R randomize · G generate · S save · K kaleidoscope · P palette · ↑/↓ time · H hide UI · F fullscreen · V record a clip · C controller guide</p>
+      <p class="fine">Eye Candy · MilkDrop engine powered by Butterchurn · Cream of the Crop presets curated by ISOSCELES, via projectM · MilkDrop texture pack via projectM · Clip timing fix via fix-webm-duration (MIT) · Right-drag on the visuals = touchpad stir · Middle-click = burst · Press C or ? for every control (controller, keyboard & mouse)</p>
     </section>
   </aside>
 
@@ -156,10 +156,11 @@
 
 <div id="controls" class="hidden">
   <div class="cbox">
-    <h2>Play the visuals 🎮</h2>
+    <div id="ctabs" class="ctabs"><button data-page="pad">🎮 Controller</button><button data-page="keys">⌨ Keyboard &amp; mouse</button></div>
+    <h2 id="ctitle">Play the visuals 🎮</h2>
     <p class="sub">Every input is live. Squeeze, twist and smash things to the beat.</p>
     <div class="cgrid" id="cgrid"></div>
-    <p class="sub">Press <b data-g="BACK"></b> or C to close · hold <b data-g="BACK"></b> to toggle autopilot</p>
+    <p class="sub" id="cfoot"></p>
   </div>
 </div>
 
