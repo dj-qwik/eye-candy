@@ -270,3 +270,13 @@ body.mobile #splash .tag{font-size:10px;letter-spacing:.22em;text-align:center;p
 .pdesc{font-size:10.5px;opacity:.6;font-weight:400;line-height:1.3}
 #presetList.pickme{animation:pickme 1.6s ease-out 1}
 @keyframes pickme{0%{box-shadow:0 0 0 0 rgba(var(--c1),.0)}20%{box-shadow:0 0 0 3px rgba(var(--c1),.7)}100%{box-shadow:0 0 0 0 rgba(var(--c1),0)}}
+
+/* ───────── clip recording */
+.icon.rec .dot{display:block;width:12px;height:12px;border-radius:50%;background:#ff3b5c;box-shadow:0 0 8px rgba(255,59,92,.6);transition:border-radius .2s, transform .2s}
+.icon.rec.on .dot{border-radius:3px;transform:scale(.9);animation:recpulse 1.2s ease-in-out infinite}
+@keyframes recpulse{0%,100%{box-shadow:0 0 4px rgba(255,59,92,.5)}50%{box-shadow:0 0 16px rgba(255,59,92,1)}}
+#recHud{position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;
+  background:rgba(10,4,16,.72);border:1px solid rgba(255,59,92,.55);color:#fff;font:600 12px 'Space Grotesk',sans-serif;letter-spacing:.08em;pointer-events:none;backdrop-filter:blur(8px)}
+#recHud .dot{width:9px;height:9px;border-radius:50%;background:#ff3b5c;animation:recpulse 1.2s ease-in-out infinite}
+#recHud.hidden{display:none}
+body.recording #recHud{opacity:1}

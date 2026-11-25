@@ -15,6 +15,7 @@
 </head>
 <body>
 <canvas id="gl"></canvas>
+<div id="recHud" class="hidden"><span class="dot"></span>REC <span id="recT">0:00</span></div>
 
 <div id="splash">
   <div class="logo big"><span>EYE</span><span>CANDY</span></div>
@@ -63,7 +64,7 @@
       <button class="src" id="srcMic" data-act="mic">Mic</button>
       <button class="src" id="srcDemo" data-act="demo">Demo</button>
     </div>
-    <div class="mtrans"><button class="icon" data-act="prevTrack">⏮</button><button class="icon play" id="playBtn2" data-act="playPause">▶</button><button class="icon" data-act="nextTrack">⏭</button></div>
+    <div class="mtrans"><button class="icon" data-act="prevTrack">⏮</button><button class="icon play" id="playBtn2" data-act="playPause">▶</button><button class="icon" data-act="nextTrack">⏭</button><button class="icon rec" data-act="record" title="Record a clip"><span class="dot"></span></button></div>
     <ol id="playlist"></ol>
     <div class="pl-foot">
       <button class="mini" id="shuffleBtn" data-act="shuffle">⤮ Shuffle</button>
@@ -122,7 +123,7 @@
         <button class="btn" data-act="exportPresets">Export my presets</button>
         <button class="btn" data-act="importPresets">Import presets</button>
       </div>
-      <p class="fine">Eye Candy · MilkDrop engine powered by Butterchurn · Cream of the Crop presets curated by ISOSCELES, via projectM · MilkDrop texture pack via projectM · Right-drag on the visuals = touchpad stir · Middle-click = burst · Keyboard: ←/→ presets · Space burst · R randomize · G generate · S save · K kaleidoscope · P palette · ↑/↓ time · H hide UI · F fullscreen · C controller guide</p>
+      <p class="fine">Eye Candy · MilkDrop engine powered by Butterchurn · Cream of the Crop presets curated by ISOSCELES, via projectM · MilkDrop texture pack via projectM · Clip timing fix via fix-webm-duration (MIT) · Right-drag on the visuals = touchpad stir · Middle-click = burst · Keyboard: ←/→ presets · Space burst · R randomize · G generate · S save · K kaleidoscope · P palette · ↑/↓ time · H hide UI · F fullscreen · V record a clip · C controller guide</p>
     </section>
   </aside>
 
@@ -133,6 +134,7 @@
       <button class="icon" data-act="prevTrack">⏮</button>
       <button class="icon play" id="playBtn" data-act="playPause">▶</button>
       <button class="icon" data-act="nextTrack">⏭</button>
+      <button class="icon rec" data-act="record" title="Record a clip (V)"><span class="dot"></span></button>
     </div>
     <div class="seek"><span id="tCur">0:00</span><input type="range" id="seek" min="0" max="1000" value="0"><span id="tDur">0:00</span></div>
     <div class="vol">🔈<input type="range" id="vol" min="0" max="100" value="85"></div>
