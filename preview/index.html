@@ -113,9 +113,9 @@
         <label>Palette<select id="palSel"></select></label>
       </div>
       <div id="milkRow" class="row hidden"><label>MilkDrop preset<select id="milkSel"></select></label></div>
-      <h3>Scene shape <small>(right stick morphs <b id="stickNames"></b>)</small></h3>
-      <div id="paramSliders"></div>
-      <h3>Trip FX</h3>
+      <div class="ctabs stabs" id="tweakTabs"><button type="button" data-tw="shape" class="on">Shape</button><button type="button" data-tw="Motion">Motion</button><button type="button" data-tw="Look">Look</button><button type="button" data-tw="Music">Music</button></div>
+      <div class="twg" data-g="shape"><h3>Scene shape <small>(right stick morphs <b id="stickNames"></b>)</small></h3>
+      <div id="paramSliders"></div></div>
       <div id="fxSliders"></div>
       <div class="row btns">
         <button class="btn primary" data-act="save">★ Save as new</button>
@@ -128,7 +128,7 @@
     <section class="tabpage" id="tab-settings">
       <div id="settingsForm"></div>
       <div class="row btns">
-        <button class="btn" data-act="resetSettings">↺ Reset to defaults</button>
+        <button class="btn" data-act="resetSettings">↺ Reset this tab</button>
         <button class="btn" data-act="exportPresets">Export my presets</button>
         <button class="btn" data-act="importPresets">Import presets</button>
       </div>
